@@ -21,18 +21,18 @@ export default function NewProjectModal({ show, onHide, onCreate }) {
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("✅ Project created successfully!");
+        toast.success("Project created successfully!");
         onCreate(); // refresh projects from context
 
         setName("");
         setDescription("");
         onHide();
       } else {
-        toast.error(data.message || "❌ Failed to create project");
+        toast.error(data.message || "Failed to create project");
       }
     } catch (error) {
       console.error("Error creating project:", error);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 

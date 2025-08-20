@@ -10,6 +10,7 @@ import ProjectDetail from "./Pages/ProjectDetail";
 import Reports from "./Pages/Reports";
 import Teams from "./Pages/Teams";
 import TeamDetails from "./Pages/TeamDetails";
+import Settings from "./Pages/Settings";
 
 function App() {
   return (
@@ -18,10 +19,11 @@ function App() {
         <Routes>
           <Route path="/" element={<AuthForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/projectDetail" element={<ProjectDetail />} />
+          <Route path="/projects" element={<ProjectDetail />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/:id" element={<TeamDetails />} />
+          <Route path="/settings" element={<Settings />} />
         </Routes>
       </Router>
       <ToastContainer position="top-right" autoClose={2000} />

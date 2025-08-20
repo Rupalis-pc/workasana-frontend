@@ -26,7 +26,7 @@ export default function Sidebar({ backToDashboard }) {
         <h2 className="logo mb-4">workasana</h2>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
-            <Link to="/" className="nav-link text-white">
+            <Link to="/dashboard" className="nav-link text-white">
               📊 Dashboard
             </Link>
           </li>
