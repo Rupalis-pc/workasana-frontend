@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function NewTeamModal({ show, onHide, onCreate }) {
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
-  const [members, setMembers] = useState(["", "", ""]);
+  const [members, setMembers] = useState([""]);
 
   if (!show) return null;
 
@@ -15,35 +15,44 @@ export default function NewTeamModal({ show, onHide, onCreate }) {
     setMembers(updatedMembers);
   };
 
+  const handleAddMember = () => {
+    setMembers([...members, ""]);
+  };
+
+  const handleRemoveMember = (index) => {
+    const updatedMembers = members.filter((_, i) => i !== index);
+    setMembers(updatedMembers);
+  };
+
   const handleCreate = async () => {
     try {
-      const token = localStorage.getItem("token"); // ✅ assume login stores JWT here
+      const token = localStorage.getItem("token");
 
       const res = await fetch("http://localhost:4000/teams", {
         method: "POST",
         body: JSON.stringify({ name: teamName, description, members }),
         headers: {
           "Content-Type": "application/json",
-          Authorization: token, // ✅ send token
+          Authorization: token,
         },
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("✅ Team created successfully!");
-        onCreate(); // refresh teams
+        toast.success("Team created successfully!");
+        onCreate();
 
         setTeamName("");
         setDescription("");
-        setMembers(["", "", ""]);
+        setMembers([""]);
         onHide();
       } else {
-        toast.error(data.message || "❌ Failed to create team");
+        toast.error(data.message || "Failed to create team");
       }
     } catch (error) {
       console.error("Error creating team:", error);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
@@ -99,17 +108,34 @@ export default function NewTeamModal({ show, onHide, onCreate }) {
                 <div className="mb-3">
                   <label className="form-label">Add Members</label>
                   {members.map((member, index) => (
-                    <input
-                      key={index}
-                      type="text"
-                      className="form-control mb-2"
-                      placeholder="Member Name"
-                      value={member}
-                      onChange={(e) =>
-                        handleMemberChange(index, e.target.value)
-                      }
-                    />
+                    <div key={index} className="d-flex mb-2">
+                      <input
+                        type="text"
+                        className="form-control me-2"
+                        placeholder={`Member ${index + 1}`}
+                        value={member}
+                        onChange={(e) =>
+                          handleMemberChange(index, e.target.value)
+                        }
+                      />
+                      {members.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => handleRemoveMember(index)}
+                        >
+                          –
+                        </button>
+                      )}
+                    </div>
                   ))}
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary btn-sm mt-2"
+                    onClick={handleAddMember}
+                  >
+                    + Add Member
+                  </button>
                 </div>
               </div>
               <div className="modal-footer">
