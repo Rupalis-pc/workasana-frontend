@@ -15,7 +15,6 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
   const [teamId, setTeamId] = useState("");
   const [owners, setOwners] = useState([]);
   const [taskTags, setTaskTags] = useState([]);
-  const [due, setDue] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
 
   useEffect(() => {
@@ -123,7 +122,6 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
     setTeamId("");
     setOwners([]);
     setTaskTags([]);
-    setDue("");
     setEstimatedTime("");
   };
 
@@ -220,7 +218,7 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
                   </select>
                 </div>
 
-                {/* Owners (React Select Multi from /users) */}
+                {/* Owners (React Select Multi) */}
                 <div className="mb-3">
                   <label className="form-label">Owners *</label>
                   <Select
@@ -265,18 +263,6 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
                     className="basic-multi-select"
                     classNamePrefix="select"
                     placeholder="Select tags..."
-                  />
-                </div>
-
-                {/* Due Date */}
-                <div className="mb-3">
-                  <label className="form-label">Due Date *</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={due}
-                    onChange={(e) => setDue(e.target.value)}
-                    required
                   />
                 </div>
 

@@ -34,7 +34,7 @@ export default function Teams() {
   }, []);
 
   return (
-    <div className="teams-screen d-flex">
+    <div className="teams-screen d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sidebar backToDashboard={true} />
 

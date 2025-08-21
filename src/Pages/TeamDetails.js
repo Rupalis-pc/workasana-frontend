@@ -62,7 +62,7 @@ export default function TeamDetails() {
   if (!team) return <p className="p-4">Loading...</p>;
 
   return (
-    <div className="teams-screen d-flex">
+    <div className="teams-screen d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sidebar backToDashboard={true} />
       <div className="container py-4">

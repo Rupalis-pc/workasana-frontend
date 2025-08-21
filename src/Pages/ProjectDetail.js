@@ -11,6 +11,10 @@ export default function ProjectDetail() {
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [sortOrder, setSortOrder] = useState("newest");
 
+  // new filter states
+  const [ownerFilter, setOwnerFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
   // Fetch project details
   const fetchProject = async () => {
     try {
@@ -52,9 +56,24 @@ export default function ProjectDetail() {
   const sortedTasks = [...tasks].sort((a, b) => {
     const dateA = new Date(a.createdAt).getTime();
     const dateB = new Date(b.createdAt).getTime();
-
     return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
   });
+
+  // Apply filters
+  const filteredTasks = sortedTasks.filter((t) => {
+    const ownerMatch =
+      !ownerFilter ||
+      (t.owners && t.owners.some((o) => o.name === ownerFilter));
+    const statusMatch = !statusFilter || t.status === statusFilter;
+
+    return ownerMatch && statusMatch;
+  });
+
+  // Get unique owners and statuses
+  const uniqueOwners = Array.from(
+    new Set(tasks.flatMap((t) => (t.owners ? t.owners.map((o) => o.name) : [])))
+  );
+  const uniqueStatuses = Array.from(new Set(tasks.map((t) => t.status)));
 
   if (loading) {
     return (
@@ -88,6 +107,7 @@ export default function ProjectDetail() {
 
         {/* Filter + Sort Controls */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+          {/* Sort Buttons */}
           <div className="d-flex gap-2 flex-wrap">
             <button
               className={`btn btn-sm ${
@@ -110,11 +130,35 @@ export default function ProjectDetail() {
               Oldest First
             </button>
           </div>
-          <div>
-            <select className="form-select form-select-sm">
-              <option>Filter</option>
-              <option>By Owner</option>
-              <option>By Tag</option>
+
+          {/* Filters */}
+          <div className="d-flex gap-2">
+            {/* Owner Filter */}
+            <select
+              className="form-select form-select-sm"
+              value={ownerFilter}
+              onChange={(e) => setOwnerFilter(e.target.value)}
+            >
+              <option value="">All Owners</option>
+              {uniqueOwners.map((owner) => (
+                <option key={owner} value={owner}>
+                  {owner}
+                </option>
+              ))}
+            </select>
+
+            {/* Status Filter */}
+            <select
+              className="form-select form-select-sm"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              {uniqueStatuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -131,8 +175,8 @@ export default function ProjectDetail() {
               </tr>
             </thead>
             <tbody>
-              {sortedTasks.length > 0 ? (
-                sortedTasks.map((t) => (
+              {filteredTasks.length > 0 ? (
+                filteredTasks.map((t) => (
                   <tr key={t._id}>
                     <td>{t.name}</td>
                     <td>
@@ -166,7 +210,7 @@ export default function ProjectDetail() {
               ) : (
                 <tr>
                   <td colSpan="5" className="text-center text-muted">
-                    No tasks yet
+                    No tasks found
                   </td>
                 </tr>
               )}

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -11,22 +12,28 @@ const AuthForm = () => {
     e.preventDefault();
 
     const url = isLogin ? "/auth/login" : "/auth/signup";
+    const body = isLogin ? { email, password } : { name, email, password };
 
     try {
       const res = await fetch("http://localhost:4000" + url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        if (isLogin && data.token) {
-          localStorage.setItem("token", data.token);
+        if (isLogin) {
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+          }
+          alert("Login successful!");
+          navigate("/dashboard");
+        } else {
+          alert("Signup successful! Please login.");
+          setIsLogin(true);
         }
-        alert(isLogin ? "Login successful!" : "Signup successful!");
-        navigate("/dashboard");
       } else {
         alert(data.message || "Something went wrong");
       }
@@ -56,6 +63,20 @@ const AuthForm = () => {
         </p>
 
         <form onSubmit={handleSubmit}>
+          {!isLogin && (
+            <div className="mb-3">
+              <label className="form-label">Name</label>
+              <input
+                type="text"
+                className="form-control"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                placeholder="Enter your name"
+              />
+            </div>
+          )}
+
           <div className="mb-3">
             <label className="form-label">Email</label>
             <input

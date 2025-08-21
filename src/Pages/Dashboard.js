@@ -7,7 +7,7 @@ export default function Dashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="dashboard d-flex">
+    <div className="dashboard d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sidebar />
 
@@ -18,7 +18,7 @@ export default function Dashboard() {
           <input
             type="text"
             className="form-control w-25 me-2"
-            placeholder="Search..."
+            placeholder="Search by project/task name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

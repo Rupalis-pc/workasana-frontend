@@ -6,7 +6,7 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState("tags");
 
   return (
-    <div className="teams-screen d-flex">
+    <div className="teams-screen d-flex" style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
       <Sidebar backToDashboard={true} />
       <div className="container mt-4">
@@ -17,14 +17,6 @@ export default function Settings() {
               onClick={() => setActiveTab("tags")}
             >
               Tags
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link ${activeTab === "projects" ? "active" : ""}`}
-              onClick={() => setActiveTab("projects")}
-            >
-              Projects
             </button>
           </li>
         </ul>

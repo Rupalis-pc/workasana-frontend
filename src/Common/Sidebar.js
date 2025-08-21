@@ -4,8 +4,8 @@ export default function Sidebar({ backToDashboard }) {
   if (backToDashboard) {
     return (
       <aside
-        className="bg-dark text-white p-3 vh-100"
-        style={{ minWidth: 220 }}
+        className="bg-dark text-white p-3 "
+        style={{ minWidth: 220, minHeight: "100%" }}
       >
         <h2 className="logo mb-4">workasana</h2>
         <ul className="nav flex-column">
@@ -20,8 +20,8 @@ export default function Sidebar({ backToDashboard }) {
   } else {
     return (
       <aside
-        className="bg-dark text-white p-3 vh-100"
-        style={{ minWidth: 220 }}
+        className="bg-dark text-white p-3 "
+        style={{ minWidth: 220, minHeight: "100vh" }}
       >
         <h2 className="logo mb-4">workasana</h2>
         <ul className="nav flex-column">
@@ -30,11 +30,11 @@ export default function Sidebar({ backToDashboard }) {
               📊 Dashboard
             </Link>
           </li>
-          <li className="nav-item mb-2">
+          {/* <li className="nav-item mb-2">
             <Link to="/projects" className="nav-link text-white">
               📁 Project
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item mb-2">
             <Link to="/teams" className="nav-link text-white">
               👥 Team

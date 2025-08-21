@@ -24,23 +24,59 @@ ChartJS.register(
 
 export default function Reports() {
   const [reportData, setReportData] = useState({
-    workDone: [5, 7], // Example: 5 completed, 7 pending last week
-    pendingDays: [3, 2, 4, 1, 5, 0, 6], // Example per day
-    tasksByTeam: { Design: 8, Dev: 12, QA: 6 },
-    tasksByOwner: { Ujjwal: 5, Aarti: 7, Rahul: 3 },
+    workDone: [], // [completed, pending]
+    tasksByTeam: {},
+    tasksByOwner: {},
   });
 
   useEffect(() => {
-    // Fetch reports data from backend
     const fetchReports = async () => {
       try {
-        const res = await fetch("http://localhost:4000/reports");
-        if (res.ok) {
-          const data = await res.json();
-          setReportData(data);
-        }
+        // 1. Total Work Done
+        const workRes = await fetch(
+          "http://localhost:4000/report/total-work-done"
+        );
+        const workData = await workRes.json();
+
+        let completed = 0;
+        let pending = 0;
+
+        workData.forEach((w) => {
+          if (w._id === "Completed") {
+            completed = w.count;
+          } else {
+            pending += w.count;
+          }
+        });
+
+        // 2. Closed tasks by team
+        const teamRes = await fetch(
+          "http://localhost:4000/report/closed-tasks-team"
+        );
+        const teamData = await teamRes.json();
+        const teamStats = {};
+        teamData.forEach((t) => {
+          teamStats[t.teamName || "Unknown"] = t.totalClosed;
+        });
+
+        // 3. Closed tasks by owner
+        const ownerRes = await fetch(
+          "http://localhost:4000/report/closed-tasks-owner"
+        );
+        const ownerData = await ownerRes.json();
+        const ownerStats = {};
+        ownerData.forEach((o) => {
+          ownerStats[o.ownerName || "Unknown"] = o.totalClosed;
+        });
+
+        // ✅ Update state safely
+        setReportData({
+          workDone: [completed, pending],
+          tasksByTeam: teamStats,
+          tasksByOwner: ownerStats,
+        });
       } catch (err) {
-        console.error("Error fetching reports", err);
+        console.error("Error fetching reports:", err);
       }
     };
 
@@ -62,39 +98,20 @@ export default function Reports() {
         {/* Report Overview */}
         <section className="section">
           <div className="row g-4">
-            {/* Total Work Done Last Week */}
+            {/* Total Work Done */}
             <div className="col-md-6">
               <div className="card shadow-sm">
                 <div className="card-body">
-                  <h5 className="card-title">Total Work Done Last Week</h5>
+                  <h5 className="card-title">Total Work Done</h5>
                   <Doughnut
                     data={{
                       labels: ["Completed", "Pending"],
                       datasets: [
                         {
-                          data: reportData.workDone,
+                          data: reportData.workDone.length
+                            ? reportData.workDone
+                            : [0, 0],
                           backgroundColor: ["#28a745", "#ffc107"],
-                        },
-                      ],
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Total Days of Work Pending */}
-            <div className="col-md-6">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h5 className="card-title">Total Days of Work Pending</h5>
-                  <Bar
-                    data={{
-                      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                      datasets: [
-                        {
-                          label: "Pending Tasks",
-                          data: reportData.pendingDays,
-                          backgroundColor: "#007bff",
                         },
                       ],
                     }}
