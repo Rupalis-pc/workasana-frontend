@@ -7,7 +7,7 @@ export default function Projects({ searchTerm }) {
     useAppContext();
 
   const navigate = useNavigate();
-
+  
   const filteredProjects = projects.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -36,13 +36,6 @@ export default function Projects({ searchTerm }) {
                 onClick={() => navigate(`/project/${p._id}`)}
               >
                 <div className="card-body">
-                  {/* <span
-                    className={`badge bg-${
-                      p.status === "Completed" ? "success" : "warning"
-                    } text-uppercase mb-2`}
-                  >
-                    {p.status}
-                  </span> */}
                   <h4 className="card-title">{p.name}</h4>
                   <p className="card-text">{p.description}</p>
                 </div>

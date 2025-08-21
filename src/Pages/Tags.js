@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { API_URL } from "../useFetch";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
@@ -9,7 +10,7 @@ export default function Tags() {
   // Fetch all tags
   const fetchTags = async () => {
     try {
-      const res = await fetch("http://localhost:4000/tags");
+      const res = await fetch(`${API_URL}/report/tags`);
       if (!res.ok) throw new Error("Failed to fetch tags");
       const data = await res.json();
       setTags(data);
@@ -21,7 +22,7 @@ export default function Tags() {
   // Create a new tag
   const createTag = async () => {
     try {
-      const res = await fetch("http://localhost:4000/tags", {
+      const res = await fetch(`${API_URL}/report/tags`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newTag }),

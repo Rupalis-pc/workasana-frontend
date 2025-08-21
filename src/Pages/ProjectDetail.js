@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Sidebar from "../Common/Sidebar";
 import NewTaskModal from "./NewTaskModal";
+import { API_URL } from "../useFetch";
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ export default function ProjectDetail() {
   const fetchProject = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/project/${id}`, {
+      const res = await fetch(`${API_URL}/projects/${id}`, {
         headers: { Authorization: token },
       });
       const data = await res.json();
@@ -33,7 +34,7 @@ export default function ProjectDetail() {
   const fetchTasks = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/tasks?project=${id}`, {
+      const res = await fetch(`${API_URL}/tasks/projects=${id}`, {
         headers: { Authorization: token },
       });
       const data = await res.json();

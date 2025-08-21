@@ -11,6 +11,7 @@ import {
   BarElement,
 } from "chart.js";
 import { Doughnut, Bar } from "react-chartjs-2";
+import { API_URL } from "../useFetch";
 
 ChartJS.register(
   Title,
@@ -33,9 +34,7 @@ export default function Reports() {
     const fetchReports = async () => {
       try {
         // 1. Total Work Done
-        const workRes = await fetch(
-          "http://localhost:4000/report/total-work-done"
-        );
+        const workRes = await fetch(`${API_URL}/report/total-work-done`);
         const workData = await workRes.json();
 
         let completed = 0;
@@ -51,7 +50,7 @@ export default function Reports() {
 
         // 2. Closed tasks by team
         const teamRes = await fetch(
-          "http://localhost:4000/report/closed-tasks-team"
+          "https://workasana-backend-three.vercel.app/report/closed-tasks-team"
         );
         const teamData = await teamRes.json();
         const teamStats = {};
@@ -61,7 +60,7 @@ export default function Reports() {
 
         // 3. Closed tasks by owner
         const ownerRes = await fetch(
-          "http://localhost:4000/report/closed-tasks-owner"
+          "https://workasana-backend-three.vercel.app/report/closed-tasks-owner"
         );
         const ownerData = await ownerRes.json();
         const ownerStats = {};

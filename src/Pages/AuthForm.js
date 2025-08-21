@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../useFetch";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -15,7 +16,7 @@ const AuthForm = () => {
     const body = isLogin ? { email, password } : { name, email, password };
 
     try {
-      const res = await fetch("http://localhost:4000" + url, {
+      const res = await fetch(API_URL + url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),

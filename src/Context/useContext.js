@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { API_URL } from "../useFetch";
 
 export const AppContext = createContext();
 
@@ -13,10 +14,10 @@ export function AppProvider({ children }) {
   // fetch all projects
   async function fetchProjects() {
     try {
-      const res = await fetch("http://localhost:4000/projects");
+      const res = await fetch(`${API_URL}/projects`);
       const data = await res.json();
       if (res.ok) {
-        setProjects(data); // assuming backend returns array
+        setProjects(data); 
       }
     } catch (error) {
       console.error("Error fetching projects:", error);

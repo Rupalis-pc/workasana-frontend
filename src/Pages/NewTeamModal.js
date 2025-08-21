@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "../useFetch";
 
 export default function NewTeamModal({ show, onHide, onCreate }) {
   const [teamName, setTeamName] = useState("");
@@ -28,7 +29,7 @@ export default function NewTeamModal({ show, onHide, onCreate }) {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:4000/teams", {
+      const res = await fetch(`${API_URL}/teams`, {
         method: "POST",
         body: JSON.stringify({ name: teamName, description, members }),
         headers: {

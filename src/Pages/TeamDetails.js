@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import NewMemberModal from "./NewMemberModal";
 import Sidebar from "../Common/Sidebar";
 import { toast } from "react-toastify";
+import { API_URL } from "../useFetch";
 
 export default function TeamDetails() {
   const { id } = useParams(); // get teamId from route (/teams/:id)
@@ -13,7 +14,7 @@ export default function TeamDetails() {
   const fetchTeam = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/teams/${id}`, {
+      const res = await fetch(`${API_URL}/report/teams/${id}`, {
         headers: { Authorization: token },
       });
       const data = await res.json();
@@ -36,7 +37,7 @@ export default function TeamDetails() {
   const handleAddMember = async (member) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:4000/teams/${id}/members`, {
+      const res = await fetch(`${API_URL}/teams/${id}/members`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

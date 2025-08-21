@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "../useFetch";
 
 export default function NewProjectModal({ show, onHide, onCreate }) {
   const [name, setName] = useState("");
@@ -10,7 +11,7 @@ export default function NewProjectModal({ show, onHide, onCreate }) {
 
   const handleCreate = async () => {
     try {
-      const res = await fetch("http://localhost:4000/projects", {
+      const res = await fetch(`${API_URL}/projects`, {
         method: "POST",
         body: JSON.stringify({ name, description }),
         headers: {

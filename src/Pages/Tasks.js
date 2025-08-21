@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import NewTaskModal from "./NewTaskModal";
+import { API_URL } from "../useFetch";
 
 const Tasks = ({ searchTerm }) => {
   const [tasks, setTasks] = useState([]);
@@ -7,7 +8,7 @@ const Tasks = ({ searchTerm }) => {
 
   const fetchTasks = async () => {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://localhost:4000/tasks", {
+    const res = await fetch(`${API_URL}/tasks`, {
       headers: { Authorization: token },
     });
     const data = await res.json();

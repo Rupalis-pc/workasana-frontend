@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { API_URL } from "../useFetch";
 
 export default function NewTaskModal({ show, onHide, onCreate }) {
   const [projects, setProjects] = useState([]);
@@ -28,7 +29,7 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("http://localhost:4000/projects");
+      const res = await fetch(`${API_URL}/projects`);
       if (!res.ok) throw new Error("Failed to fetch projects");
       const data = await res.json();
       setProjects(data);
@@ -41,9 +42,12 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
   const fetchTeams = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:4000/teams", {
-        headers: { Authorization: token },
-      });
+      const res = await fetch(
+        "https://workasana-backend-three.vercel.app/teams",
+        {
+          headers: { Authorization: token },
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch teams");
       const data = await res.json();
       setTeams(data);
@@ -55,7 +59,9 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
 
   const fetchTags = async () => {
     try {
-      const res = await fetch("http://localhost:4000/tags");
+      const res = await fetch(
+        "https://workasana-backend-three.vercel.app/tags"
+      );
       if (!res.ok) throw new Error("Failed to fetch tags");
       const data = await res.json();
       setTags(data);
@@ -67,7 +73,9 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:4000/users");
+      const res = await fetch(
+        "https://workasana-backend-three.vercel.app/users"
+      );
       if (!res.ok) throw new Error("Failed to fetch users");
       const data = await res.json();
       setUsers(data);
@@ -83,22 +91,25 @@ export default function NewTaskModal({ show, onHide, onCreate }) {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await fetch("http://localhost:4000/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify({
-          name,
-          project: projectId,
-          team: teamId,
-          owners,
-          tags: taskTags,
-          timeToComplete: parseInt(estimatedTime, 10),
-          status,
-        }),
-      });
+      const res = await fetch(
+        "https://workasana-backend-three.vercel.app/tasks",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify({
+            name,
+            project: projectId,
+            team: teamId,
+            owners,
+            tags: taskTags,
+            timeToComplete: parseInt(estimatedTime, 10),
+            status,
+          }),
+        }
+      );
 
       const data = await res.json();
 

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+export const API_URL = "https://workasana-backend-five.vercel.app";
+
 export default function useFetch(url, initialData) {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);

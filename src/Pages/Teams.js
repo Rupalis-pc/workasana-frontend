@@ -3,6 +3,7 @@ import Sidebar from "../Common/Sidebar";
 import NewTeamModal from "./NewTeamModal";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { API_URL } from "../useFetch";
 
 export default function Teams() {
   const [teams, setTeams] = useState([]);
@@ -12,7 +13,7 @@ export default function Teams() {
   const fetchTeams = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:4000/teams", {
+      const res = await fetch(`${API_URL}/teams}`, {
         headers: { Authorization: token },
       });
 
