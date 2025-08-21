@@ -2,11 +2,15 @@ import NewProjectModal from "./NewProjectModal";
 import useAppContext from "../Context/useContext";
 import { useNavigate } from "react-router-dom";
 
-export default function Projects() {
+export default function Projects({ searchTerm }) {
   const { projects, showModal, setShowModal, handleCreateProject, loading } =
     useAppContext();
 
   const navigate = useNavigate();
+
+  const filteredProjects = projects.filter((p) =>
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (loading) {
     return <p>Loading projects...</p>;
@@ -25,11 +29,11 @@ export default function Projects() {
           </button>
         </div>
         <div className="row g-3">
-          {projects.map((p) => (
+          {filteredProjects.map((p) => (
             <div key={p._id} className="col-md-4">
               <div
                 className="card shadow-sm h-100"
-                onClick={() => navigate(`/ProjectDetail/${p._id}`)}
+                onClick={() => navigate(`/project/${p._id}`)}
               >
                 <div className="card-body">
                   {/* <span

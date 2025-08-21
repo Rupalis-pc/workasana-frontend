@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Select from "react-select";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function NewTaskModal({
-  show,
-  onHide,
-  onCreate,
-  projects = [],
-  teams = [],
-  users = [],
-  tags = [],
-}) {
+export default function NewTaskModal({ show, onHide, onCreate }) {
+  const [projects, setProjects] = useState([]);
+  const [teams, setTeams] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [status, setStatus] = useState("To Do");
+
   const [projectId, setProjectId] = useState("");
   const [name, setName] = useState("");
   const [teamId, setTeamId] = useState("");
@@ -19,40 +18,102 @@ export default function NewTaskModal({
   const [due, setDue] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
 
+  useEffect(() => {
+    if (show) {
+      fetchProjects();
+      fetchTeams();
+      fetchTags();
+      fetchUsers();
+    }
+  }, [show]);
+
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/projects");
+      if (!res.ok) throw new Error("Failed to fetch projects");
+      const data = await res.json();
+      setProjects(data);
+    } catch (err) {
+      console.error("Error fetching projects:", err);
+      toast.error("Failed to load projects");
+    }
+  };
+
+  const fetchTeams = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:4000/teams", {
+        headers: { Authorization: token },
+      });
+      if (!res.ok) throw new Error("Failed to fetch teams");
+      const data = await res.json();
+      setTeams(data);
+    } catch (err) {
+      console.error("Error fetching teams:", err);
+      toast.error("Failed to load teams");
+    }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/tags");
+      if (!res.ok) throw new Error("Failed to fetch tags");
+      const data = await res.json();
+      setTags(data);
+    } catch (err) {
+      console.error("Error fetching tags:", err);
+      toast.error("Failed to load tags");
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("http://localhost:4000/users");
+      if (!res.ok) throw new Error("Failed to fetch users");
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      toast.error("Failed to load users");
+    }
+  };
+
   if (!show) return null;
 
   const handleCreate = async () => {
     try {
+      const token = localStorage.getItem("token");
+
       const res = await fetch("http://localhost:4000/tasks", {
         method: "POST",
-        body: JSON.stringify({
-          projectId,
-          name,
-          teamId,
-          owners,
-          tags: taskTags,
-          due,
-          estimatedTime,
-          status: "In Progress",
-        }),
         headers: {
           "Content-Type": "application/json",
+          Authorization: token,
         },
+        body: JSON.stringify({
+          name,
+          project: projectId,
+          team: teamId,
+          owners,
+          tags: taskTags,
+          timeToComplete: parseInt(estimatedTime, 10),
+          status,
+        }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        toast.success("✅ Task created successfully!");
-        onCreate(); // refresh tasks
+        toast.success("Task created successfully!");
+        onCreate();
         resetForm();
         onHide();
       } else {
-        toast.error(data.message || "❌ Failed to create task");
+        toast.error(data.message || "Failed to create task");
       }
     } catch (error) {
       console.error("Error creating task:", error);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
@@ -97,7 +158,7 @@ export default function NewTaskModal({
               <div className="modal-body">
                 {/* Project */}
                 <div className="mb-3">
-                  <label className="form-label">Select Project</label>
+                  <label className="form-label">Select Project *</label>
                   <select
                     className="form-select"
                     value={projectId}
@@ -106,7 +167,7 @@ export default function NewTaskModal({
                   >
                     <option value="">-- Select Project --</option>
                     {projects.map((p) => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p._id} value={p._id}>
                         {p.name}
                       </option>
                     ))}
@@ -115,7 +176,7 @@ export default function NewTaskModal({
 
                 {/* Task Name */}
                 <div className="mb-3">
-                  <label className="form-label">Task Name</label>
+                  <label className="form-label">Task Name *</label>
                   <input
                     type="text"
                     className="form-control"
@@ -127,66 +188,89 @@ export default function NewTaskModal({
 
                 {/* Team */}
                 <div className="mb-3">
-                  <label className="form-label">Select Team</label>
+                  <label className="form-label">Select Team *</label>
                   <select
                     className="form-select"
                     value={teamId}
                     onChange={(e) => setTeamId(e.target.value)}
+                    required
                   >
                     <option value="">-- Select Team --</option>
                     {teams.map((t) => (
-                      <option key={t.id} value={t.id}>
+                      <option key={t._id} value={t._id}>
                         {t.name}
                       </option>
                     ))}
                   </select>
                 </div>
 
-                {/* Owners */}
+                {/* Status */}
                 <div className="mb-3">
-                  <label className="form-label">Owners</label>
+                  <label className="form-label">Status</label>
                   <select
-                    multiple
                     className="form-select"
-                    value={owners}
-                    onChange={(e) =>
-                      setOwners(
-                        [...e.target.selectedOptions].map((o) => o.value)
-                      )
-                    }
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    required
                   >
-                    {users.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.name}
-                      </option>
-                    ))}
+                    <option value="To Do">To Do</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Blocked">Blocked</option>
                   </select>
                 </div>
 
-                {/* Tags */}
+                {/* Owners (React Select Multi from /users) */}
                 <div className="mb-3">
-                  <label className="form-label">Tags</label>
-                  <select
-                    multiple
-                    className="form-select"
-                    value={taskTags}
-                    onChange={(e) =>
-                      setTaskTags(
-                        [...e.target.selectedOptions].map((o) => o.value)
-                      )
+                  <label className="form-label">Owners *</label>
+                  <Select
+                    isMulti
+                    options={users.map((u) => ({
+                      value: u._id,
+                      label: u.name,
+                    }))}
+                    value={owners
+                      .map((id) => {
+                        const user = users.find((u) => u._id === id);
+                        return user
+                          ? { value: user._id, label: user.name }
+                          : null;
+                      })
+                      .filter(Boolean)}
+                    onChange={(selected) =>
+                      setOwners(selected ? selected.map((s) => s.value) : [])
                     }
-                  >
-                    {tags.map((tag) => (
-                      <option key={tag} value={tag}>
-                        {tag}
-                      </option>
-                    ))}
-                  </select>
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="Select owners..."
+                  />
+                </div>
+
+                {/* Tags (React Select Multi) */}
+                <div className="mb-3">
+                  <label className="form-label">Tags *</label>
+                  <Select
+                    isMulti
+                    options={tags.map((tag) => ({
+                      value: tag.name, // send tag.name, not tag._id
+                      label: tag.name,
+                    }))}
+                    value={taskTags.map((name) => ({
+                      value: name,
+                      label: name,
+                    }))} // store string names
+                    onChange={(selected) =>
+                      setTaskTags(selected ? selected.map((s) => s.value) : [])
+                    }
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    placeholder="Select tags..."
+                  />
                 </div>
 
                 {/* Due Date */}
                 <div className="mb-3">
-                  <label className="form-label">Due Date</label>
+                  <label className="form-label">Due Date *</label>
                   <input
                     type="date"
                     className="form-control"
@@ -198,13 +282,14 @@ export default function NewTaskModal({
 
                 {/* Estimated Time */}
                 <div className="mb-3">
-                  <label className="form-label">Estimated Time (Days)</label>
+                  <label className="form-label">Estimated Time (Days) *</label>
                   <input
                     type="number"
                     min="1"
                     className="form-control"
                     value={estimatedTime}
                     onChange={(e) => setEstimatedTime(e.target.value)}
+                    required
                   />
                 </div>
               </div>

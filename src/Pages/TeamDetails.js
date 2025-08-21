@@ -5,7 +5,7 @@ import Sidebar from "../Common/Sidebar";
 import { toast } from "react-toastify";
 
 export default function TeamDetails() {
-  const { id } = useParams(); // ✅ get teamId from route (/teams/:id)
+  const { id } = useParams(); // get teamId from route (/teams/:id)
   const [team, setTeam] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -20,11 +20,11 @@ export default function TeamDetails() {
       if (res.ok) {
         setTeam(data);
       } else {
-        toast.error(data.message || "❌ Failed to fetch team");
+        toast.error(data.message || "Failed to fetch team");
       }
     } catch (err) {
       console.error(err);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
@@ -47,15 +47,15 @@ export default function TeamDetails() {
 
       const data = await res.json();
       if (res.ok) {
-        toast.success("✅ Member added!");
+        toast.success("Member added!");
         setTeam(data); // backend returns updated team
         setShowModal(false);
       } else {
-        toast.error(data.message || "❌ Failed to add member");
+        toast.error(data.message || "Failed to add member");
       }
     } catch (err) {
       console.error(err);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 

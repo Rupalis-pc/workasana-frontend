@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<AuthForm />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/projects" element={<ProjectDetail />} />
+          <Route path="/project/:id" element={<ProjectDetail />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/teams" element={<Teams />} />
           <Route path="/teams/:id" element={<TeamDetails />} />

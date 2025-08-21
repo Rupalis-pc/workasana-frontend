@@ -21,11 +21,11 @@ export default function Teams() {
       if (res.ok) {
         setTeams(data);
       } else {
-        toast.error(data.message || "❌ Failed to fetch teams");
+        toast.error(data.message || "Failed to fetch teams");
       }
     } catch (error) {
       console.error("Error fetching teams:", error);
-      toast.error("❌ Something went wrong");
+      toast.error("Something went wrong");
     }
   };
 
